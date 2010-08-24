@@ -1,5 +1,6 @@
 require "hoe"
 
+Hoe.plugins.delete :rubyforge
 Hoe.plugin :doofus, :isolate, :git
 
 Hoe.spec "onesie" do
