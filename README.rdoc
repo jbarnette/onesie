@@ -1,0 +1,88 @@
+= Onesie
+
+* http://github.com/jbarnette/onesie
+
+== Description
+
+A Rack middleware to make URLs in one-page webapps easier.
+
+In a couple of recent projects, I've needed to avoid full page
+refreshes as much as possible. In the first, I wanted to keep an
+embedded music player active while the user was browsing. In the
+second, I just wanted fancier transitions between pages.
+
+It's possible to do this in an ad-hoc way, but I very quickly got
+tired of hacking things together. Enter Onesie.
+
+Onesie congealed from these requirements:
+
+* I want a one-page web app,
+* But I want the back button to work,
+* And I want search engines to still index some stuff,
+* And I (mostly) don't want to change the way I write a Rails/Sinatra app.
+
+If someone visits <tt>http://example.org/meta/contact</tt>, I want
+them to be redirected to <tt>http://example.org/blah/#/meta/contact</tt>,
+but after the redirection I still want the original route to be
+rendered for search engine indexing, etc.
+
+When Onesie gets a request, it looks to see if under your preferred
+one-page app path ("blah" in the example above). If it's not, Onesie
+sets the current request's path in the session and redirects to your
+app path.
+
+If a request is under the one-page app path, the "real" request's path
+is retrieved from the session and used for subsequent routing and
+rendering. This means that, as above, a request for
+
+    http://example.org/meta/contact
+
+Will be redirected to
+
+    http://example.org/blah/#/meta/contact
+
+But still render the correct action in the wrapped app, even though
+URL fragments aren't passed to the server.
+
+This is a terrible explanation. I'll write a sample app or something
+soon.
+
+== Examples
+
+    require "onesie"
+
+    # in config.ru, after any session support
+    use Onesie
+
+    # in Rails
+
+    unless Rails.env.test?
+      config.middleware.insert_before ActionDispatch::Flash, "Onesie"
+    end
+
+== Installation
+
+    $ gem install onesie
+
+== License
+
+Copyright 2010 John Barnette (code@jbarnette.com)
+
+Permission is hereby granted, free of charge, to any person obtaining
+a copy of this software and associated documentation files (the
+'Software'), to deal in the Software without restriction, including
+without limitation the rights to use, copy, modify, merge, publish,
+distribute, sublicense, and/or sell copies of the Software, and to
+permit persons to whom the Software is furnished to do so, subject to
+the following conditions:
+
+The above copyright notice and this permission notice shall be
+included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
