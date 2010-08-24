@@ -50,7 +50,7 @@ class Onesie
     allowed = only.empty? || only.any? { |o| o =~ request.path_info }
     denied  = except.any? { |e| e =~ request.path_info }
 
-    return @app.call if request.xhr? || !allowed || denied
+    return @app.call env if request.xhr? || !allowed || denied
 
     if request.path_info == @path
       path = session.delete("onesie.path") || "/"
